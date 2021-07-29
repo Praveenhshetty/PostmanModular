@@ -1,0 +1,560 @@
+{
+	"info": {
+		"_postman_id": "f80a3b9d-16ea-482e-a2b2-f56c13345146",
+		"name": "Modular Bank",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Post",
+			"item": [
+				{
+					"name": "Token Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"var jsonData = pm.response.json(); \r",
+									"pm.test(\"Verify token is not empty\", function () { \r",
+									"    pm.expect(jsonData.data.token).not.equal(null)\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type header is application/json\", () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type'));\r",
+									"});\r",
+									"pm.environment.set(\"Token\", pm.response.json().data.token)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-tenant-code",
+								"value": "SANDBOX",
+								"type": "text"
+							},
+							{
+								"key": "x-channel-code",
+								"value": "SYSTEM",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"username\": \"modular.system\",\r\n\"password\": \"pass\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://auth-api.sandbox.modularbank.xyz/api/v1/employees/authorise",
+							"protocol": "https",
+							"host": [
+								"auth-api",
+								"sandbox",
+								"modularbank",
+								"xyz"
+							],
+							"path": [
+								"api",
+								"v1",
+								"employees",
+								"authorise"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Customer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"verify Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"var jsonData = pm.response.json(); \r",
+									"pm.test(\"Verify Responses are not empty\", function () { \r",
+									"    pm.expect(jsonData.data.personId).not.equal(null)\r",
+									"    pm.expect(jsonData.data.fullName).not.equal(null)\r",
+									"});\r",
+									"pm.test(\"Verify the Validation of the fields\", function () { \r",
+									"    pm.expect(jsonData.data.fullName).to.be.a(\"String\")\r",
+									"    pm.expect(jsonData.data.maritalStatusCode).to.include(\"MARRIED\");\r",
+									"    pm.expect(jsonData.data.email).to.contains(\"@example\");\r",
+									"    pm.expect(jsonData.data.personId).to.have.lengthOf(\"7\");\r",
+									"});\r",
+									"\r",
+									"console.log(jsonData.data.email)\r",
+									"\r",
+									"\r",
+									"pm.environment.set(\"personID\",pm.response.json().data.personId);\r",
+									"pm.environment.set(\"fullName\",pm.response.json().data.fullName);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-tenant-code",
+								"value": "SANDBOX",
+								"type": "text"
+							},
+							{
+								"key": "x-channel-code",
+								"value": "SYSTEM",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n \"givenName\": \"{{$randomFirstName}}\",\r\n \"surname\": \"{{$randomLastName}}\",\r\n \"middleName\": \"\",\r\n \"birthDate\": \"1987-03-03\",\r\n \"personTypeCode\": \"P\",\r\n \"sex\": \"M\",\r\n \"email\": \"{{$randomExampleEmail}}\",\r\n \"phoneNumber\": \"{{$randomPhoneNumber}}\",\r\n \"phoneCountryCode\": \"+372\",\r\n \"educationCode\": \"HIGHER_EDUCATION\",\r\n \"activityCode\": \"SPECIALIST\",\r\n \"housingTypeCode\": \"PRIVATE\",\r\n \"buildingTypeCode\": \"APARTMENT\",\r\n \"businessAreaCode\": \"LEGAL\",\r\n \"maritalStatusCode\": \"MARRIED\",\r\n \"dependantPersons\": 1,\r\n \"employmentTimeCode\": \"MORE_4_YEAR\",\r\n \"customerType\": \"string\",\r\n \"nationality\": \"DE\",\r\n \"placeOfBirth\": \"Berlin\",\r\n \"countryOfBirth\": \"DE\",\r\n \"language\": \"DE\",\r\n \"taxResidencyCountry\": \"DE\",\r\n \"fixedEmploymentLength\": 6,\r\n \"identificationNumber\": {\r\n \"idNumber\": \"{{$randomBankAccount}}\",\r\n \"idCountryCode\": \"DE\",\r\n \"vatNumber\": \"DE123456789\",\r\n \"taxNumber\": \"12345678901\"\r\n },\r\n \"addresses\": [\r\n {\r\n \"addressTypeCode\": \"R\",\r\n \"street1\": \"Fennstrasse 4\",\r\n \"street2\": \"string\",\r\n \"cityCounty\": \"Berlin\",\r\n \"stateRegion\": \"Berlin\",\r\n \"zip\": \"13347\",\r\n \"countryCode\": \"DE\",\r\n \"moveInDate\": \"2018-06-23\"\r\n }\r\n ],\r\n \"document\": {\r\n \"issuingCountry\": \"DE\",\r\n \"number\": \"{{$randomBankAccount}}\",\r\n \"documentTypeCode\": \"PASSPORT\",\r\n \"expiryDate\": \"2025-01-03\"\r\n },\r\n \"usResident\": true,\r\n \"pep\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://person-api.sandbox.modularbank.xyz/api/v1/persons",
+							"protocol": "https",
+							"host": [
+								"person-api",
+								"sandbox",
+								"modularbank",
+								"xyz"
+							],
+							"path": [
+								"api",
+								"v1",
+								"persons"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creating Account",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"console.log(pm.environment.get(\"personID\"))\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json(); \r",
+									"//console.log(pm.environment.get(personID))\r",
+									"pm.test(\"Verify PersonID and Name values\", function () { \r",
+									"    pm.expect(jsonData.data.personId).is.to.equal(pm.variables.get(\"personID\"));\r",
+									"    pm.expect(jsonData.data.personName).is.to.equal(pm.variables.get(\"fullName\"));\r",
+									"});\r",
+									"pm.test(\"Verify accountID is not null\", function () { \r",
+									"    pm.expect(jsonData.data.accountId).is.not.equal(null)\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"accountID\",pm.response.json().data.accountId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-tenant-code",
+								"value": "SANDBOX",
+								"type": "text"
+							},
+							{
+								"key": "x-channel-code",
+								"value": "SYSTEM",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"accountName\": \"Demo account\",\r\n\"accountTypeCode\": \"CURRENCY\",\r\n\"currencyCode\": \"EUR\",\r\n\"customerGroupCode\": \"GROUP_A\",\r\n\"personId\": \"{{personID}}\",\r\n\"personName\":\"{{fullName}}\",\r\n\"priceListTypeCode\": \"STANDARD\",\r\n\"residencyCountryCode\": \"FI\",\r\n\"source\": {\r\n\"sourceName\": \"TEST\",\r\n\"sourceRef\": \"{{$guid}}\"\r\n}\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://account-api.sandbox.modularbank.xyz/api/v1/persons/{{personID}}/accounts",
+							"protocol": "https",
+							"host": [
+								"account-api",
+								"sandbox",
+								"modularbank",
+								"xyz"
+							],
+							"path": [
+								"api",
+								"v1",
+								"persons",
+								"{{personID}}",
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Transactions",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment');\r",
+									"pm.globals.set(\"today\", moment().format(\"MM-DD-YYYY\"));"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"var jsonData = pm.response.json(); \r",
+									"pm.test(\"Verify accountTransactionId is not empty\", function () { \r",
+									"    pm.expect(jsonData.data.accountTransactionId).not.equal(null)\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify the account Id Matches with Variable\", function(){\r",
+									"    pm.expect(jsonData.data[0].accountId).is.to.equal(pm.variables.get(\"accountID\"));\r",
+									"}\r",
+									");\r",
+									"\r",
+									"pm.test(\"Verify the accountbalance\", function(){\r",
+									"    pm.expect(jsonData.data[0].initialBalanceAmount).is.to.greaterThan(Number(\"5500\"))\r",
+									"}\r",
+									");\r",
+									"\r",
+									"console.log(jsonData.data.accountId)\r",
+									"console.log(pm.variables.get(\"accountID\"))\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-tenant-code",
+								"value": "SANDBOX",
+								"type": "text"
+							},
+							{
+								"key": "x-channel-code",
+								"value": "SYSTEM",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"details\": \"Card topup\",\r\n\"effectiveDate\": \"{{today}}\",\r\n\"money\": {\r\n\"amount\": 6000,\r\n\"currencyCode\": \"EUR\"\r\n},\r\n\"source\": {\r\n\"sourceName\": \"CARD_TOPUP\",\r\n\"sourceRef\": \"ID-{{$timestamp}}\"\r\n},\r\n\"transactionTypeCode\": \"CARD_TOPUP\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://account-api.sandbox.modularbank.xyz/api/v3/accounts/{{accountID}}/transactions",
+							"protocol": "https",
+							"host": [
+								"account-api",
+								"sandbox",
+								"modularbank",
+								"xyz"
+							],
+							"path": [
+								"api",
+								"v3",
+								"accounts",
+								"{{accountID}}",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Payments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json(); \r",
+									"pm.test(\"Verify Json values\", function () { \r",
+									"    pm.expect(jsonData.data.accountId).is.to.equal(pm.variables.get(\"accountID\"));\r",
+									"    pm.expect(jsonData.data.name).is.to.equal(pm.variables.get(\"fullName\"));\r",
+									"});\r",
+									"pm.test(\"Verify payment ID are not null\", function () { \r",
+									"\r",
+									"    pm.expect(jsonData.data.paymentId).is.not.equal(null)\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"paymentID\",pm.response.json().data.paymentId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-tenant-code",
+								"value": "SANDBOX",
+								"type": "text"
+							},
+							{
+								"key": "x-channel-code",
+								"value": "SYSTEM",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"counterparty\": {\r\n\"counterpartyTypeCode\": \"IBAN\",\r\n\"name\": \"{{fullName}}\",\r\n\"value\": \"EE459999000000010140\"\r\n},\r\n\"details\": \"Details\",\r\n\"directionCode\": \"OUT\",\r\n\"effectiveDate\": \"2020-06-08\",\r\n\"endToEndId\": \"{{$randomBankAccount}}\",\r\n\"money\": {\r\n\"amount\": 54.35,\r\n\"currencyCode\": \"EUR\"\r\n},\r\n\"paymentTransferTypeCode\": \"{{paymentTransferTypeCode}}\",\r\n\"paymentTypeCode\": \"ACC2SEPA\",\r\n\"source\": {\r\n\"sourceName\": \"PAYMENT\",\r\n\"sourceRef\": \"ID-{{$timestamp}}\"\r\n}\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://account-api.sandbox.modularbank.xyz/api/v1/accounts/{{accountID}}/payments/initialise",
+							"protocol": "https",
+							"host": [
+								"account-api",
+								"sandbox",
+								"modularbank",
+								"xyz"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts",
+								"{{accountID}}",
+								"payments",
+								"initialise"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Payment",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json(); \r",
+									"pm.test(\"Verify Payment, Account and name values\", function () { \r",
+									"    pm.expect(jsonData.data.paymentId).is.to.equal(pm.variables.get(\"paymentID\"));\r",
+									"    pm.expect(jsonData.data.accountId).is.to.equal(pm.variables.get(\"accountID\"));\r",
+									"    pm.expect(jsonData.data.name).is.to.equal(pm.variables.get(\"fullName\"));\r",
+									"});\r",
+									"pm.test(\"Verify payment ID is not null\", function () { \r",
+									"\r",
+									"    pm.expect(jsonData.data.paymentId).is.not.equal(null)\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-tenant-code",
+								"value": "SANDBOX",
+								"type": "text"
+							},
+							{
+								"key": "x-channel-code",
+								"value": "SYSTEM",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-token",
+								"value": "{{Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://account-api.sandbox.modularbank.xyz/api/v1/accounts/{{accountID}}/payments/{{paymentID}}/confirm",
+							"protocol": "https",
+							"host": [
+								"account-api",
+								"sandbox",
+								"modularbank",
+								"xyz"
+							],
+							"path": [
+								"api",
+								"v1",
+								"accounts",
+								"{{accountID}}",
+								"payments",
+								"{{paymentID}}",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get Account",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-tenant-code",
+						"value": "SANDBOX",
+						"type": "text"
+					},
+					{
+						"key": "x-channel-code",
+						"value": "SYSTEM",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{Token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://account-api.sandbox.modularbank.xyz/api/v1/accounts/{{accountID}}",
+					"protocol": "https",
+					"host": [
+						"account-api",
+						"sandbox",
+						"modularbank",
+						"xyz"
+					],
+					"path": [
+						"api",
+						"v1",
+						"accounts",
+						"{{accountID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET account statement",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-tenant-code",
+						"value": "SANDBOX",
+						"type": "text"
+					},
+					{
+						"key": "x-channel-code",
+						"value": "SYSTEM",
+						"type": "text"
+					},
+					{
+						"key": "x-auth-token",
+						"value": "{{Token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://account-api.sandbox.modularbank.xyz/api/v3/accounts/{{accountID}}/transactions/search",
+					"protocol": "https",
+					"host": [
+						"account-api",
+						"sandbox",
+						"modularbank",
+						"xyz"
+					],
+					"path": [
+						"api",
+						"v3",
+						"accounts",
+						"{{accountID}}",
+						"transactions",
+						"search"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,4 @@
+transactionTypeCode,currencyCode,paymentTransferTypeCode
+CARD_CREDIT,EUR,INSTANTREGULAR
+CARD_MCSEND,EUR,REGULAR
+COMP2ACC,EUR,INSTANT
