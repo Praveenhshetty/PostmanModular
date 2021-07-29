@@ -64,12 +64,16 @@
 							}
 						},
 						"url": {
-							"raw": "https://auth-{{url}}/v1/employees/authorise",
+							"raw": "https://auth-api.sandbox.modularbank.xyz/api/v1/employees/authorise",
 							"protocol": "https",
 							"host": [
-								"auth-{{url}}"
+								"auth-api",
+								"sandbox",
+								"modularbank",
+								"xyz"
 							],
 							"path": [
+								"api",
 								"v1",
 								"employees",
 								"authorise"
@@ -148,12 +152,16 @@
 							}
 						},
 						"url": {
-							"raw": "https://person-{{url}}/v1/persons",
+							"raw": "https://person-api.sandbox.modularbank.xyz/api/v1/persons",
 							"protocol": "https",
 							"host": [
-								"person-{{url}}"
+								"person-api",
+								"sandbox",
+								"modularbank",
+								"xyz"
 							],
 							"path": [
+								"api",
 								"v1",
 								"persons"
 							]
@@ -242,12 +250,16 @@
 							}
 						},
 						"url": {
-							"raw": "https://account-{{url}}/v1/persons/{{personID}}/accounts",
+							"raw": "https://account-api.sandbox.modularbank.xyz/api/v1/persons/{{personID}}/accounts",
 							"protocol": "https",
 							"host": [
-								"account-{{url}}"
+								"account-api",
+								"sandbox",
+								"modularbank",
+								"xyz"
 							],
 							"path": [
+								"api",
 								"v1",
 								"persons",
 								"{{personID}}",
@@ -339,12 +351,16 @@
 							}
 						},
 						"url": {
-							"raw": "https://account-{{url}}/v3/accounts/{{accountID}}/transactions",
+							"raw": "https://account-api.sandbox.modularbank.xyz/api/v3/accounts/{{accountID}}/transactions",
 							"protocol": "https",
 							"host": [
-								"account-{{url}}"
+								"account-api",
+								"sandbox",
+								"modularbank",
+								"xyz"
 							],
 							"path": [
+								"api",
 								"v3",
 								"accounts",
 								"{{accountID}}",
@@ -386,9 +402,7 @@
 									"\r",
 									"pm.environment.set(\"paymentID\",pm.response.json().data.paymentId);\r",
 									"\r",
-									"pm.environment.set(\"paymentAmount\", pm.response.json().data.amount)\r",
-									"var totalBalance = parseFloat(pm.environment.get(\"accountBalance\")) - parseFloat(pm.environment.get(\"paymentAmount\"))\r",
-									"pm.environment.set(\"accountBalance\", totalBalance)\r",
+									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -424,12 +438,16 @@
 							}
 						},
 						"url": {
-							"raw": "https://account-{{url}}/v1/accounts/{{accountID}}/payments/initialise",
+							"raw": "https://account-api.sandbox.modularbank.xyz/api/v1/accounts/{{accountID}}/payments/initialise",
 							"protocol": "https",
 							"host": [
-								"account-{{url}}"
+								"account-api",
+								"sandbox",
+								"modularbank",
+								"xyz"
 							],
 							"path": [
+								"api",
 								"v1",
 								"accounts",
 								"{{accountID}}",
@@ -472,7 +490,9 @@
 									"    pm.expect(jsonData.data.paymentId).is.not.equal(null)\r",
 									"});\r",
 									"\r",
-									""
+									"pm.environment.set(\"paymentAmount\", pm.response.json().data.amount)\r",
+									"var totalBalance = parseFloat(pm.environment.get(\"accountBalance\")) - parseFloat(pm.environment.get(\"paymentAmount\"))\r",
+									"pm.environment.set(\"accountBalance\", totalBalance)"
 								],
 								"type": "text/javascript"
 							}
@@ -687,7 +707,7 @@
 									"    pm.expect(jsonData.data[0].balanceId).is.to.equal(pm.variables.get(\"balanceID\"));\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Verify the get balance matched with post balance\", function () { \r",
+									"pm.test(\"Verify the get balance matches with post balance\", function () { \r",
 									"   pm.expect(jsonData.data[0].availableBalanceAmount).to.be.equal(pm.variables.get(\"accountBalance\"))\r",
 									"});\r",
 									""
